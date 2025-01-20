@@ -14,3 +14,5 @@
 
 # Final v0.5
 ![{BA7FCF0D-81CC-4206-BCD9-02367594A164}](https://github.com/user-attachments/assets/93022d41-6264-4498-8db7-b61f1e7bc86f)
+
+#### [(Tweet Link)](https://x.com/rawwcodes/status/1881364450911105238)
