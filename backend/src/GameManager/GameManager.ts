@@ -1,45 +1,52 @@
-import { WebSocket } from "ws"
-import { MESSAGE } from "../Messages";
+import { WebSocket } from "ws";
 import { Game } from "./Game";
+import { MESSAGE } from "../Messages";
 
+// User, Game
 
 export class GameManager {
-    private games: Game[]
-    private pendingPlayer: WebSocket | null
+    private games: Game[];
+    private pendingUser: WebSocket | null;
     private users: WebSocket[];
+
     constructor() {
-        this.games = []
-        this.pendingPlayer = null
-        this.users = []
+        this.games = [];
+        this.pendingUser = null;
+        this.users = [];
     }
 
     addUser(socket: WebSocket) {
-        this.users.push(socket)
-        this.messageHandler(socket);
-    }
-    
-    removeUser(socket: WebSocket) {
-        this.users = this.users.filter(user => user !== socket)
+        this.users.push(socket);
+        this.addHandler(socket)
     }
 
-    private messageHandler(socket:WebSocket) {
+    removeUser(socket: WebSocket) {
+        this.users = this.users.filter(user => user !== socket);
+        // Stop the game here because the user left
+    }
+
+    private addHandler(socket: WebSocket) {
         socket.on("message", (data) => {
-            const message = JSON.parse(data.toString())
+            const message = JSON.parse(data.toString());
+
             if (message.type === MESSAGE.init_game) {
-                console.log("STARTING THE GAME")
-                if (this.pendingPlayer) {
-                    // will start a game
-                    const game = new Game(this.pendingPlayer, socket);
+                if (this.pendingUser) {
+                    const game = new Game(this.pendingUser, socket);
                     this.games.push(game);
-                    this.pendingPlayer = null;
+                    this.pendingUser = null;
+                } else {
+                    this.pendingUser = socket;
                 }
-                else this.pendingPlayer = socket
             }
+
             if (message.type === MESSAGE.move) {
-                const game = this.games.find(game => game.player1 === socket || game.player2)
-                game?.makeMove(socket, message.move)
+                console.log("inside move")
+                const game = this.games.find(game => game.player1 === socket || game.player2 === socket);
+                if (game) {
+                    console.log("inside makemove")
+                    game.makeMove(socket, message.payload.move);
+                }
             }
         })
     }
-
 }
