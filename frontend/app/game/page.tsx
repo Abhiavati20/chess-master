@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 const Home = () => {
     const socket = useSocket();
     // const [gameStatus, setGameStatus] = useState<"in-progress" | "abandoned" | "checkmate">()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [chess, setChess] = useState<Chess>(new Chess());
     const [board, setBoard] = useState(chess.board())
     const [started, setStarted]= useState<boolean>(false)
